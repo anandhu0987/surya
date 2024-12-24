@@ -6,8 +6,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="format-detection" content="telephone=no">
-    <title>Merry Christmas | Amazing 3D Card Rotate On Mousemove</title>
+    <title>Happy Christmas 🎄</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Great+Vibes&display=swap" rel="stylesheet">
     <style>
       /* Add full background cover */
       body {
@@ -82,7 +83,21 @@
       }
 
       .card .title h3 {
-        font-size: clamp(16px, 4vw, 20px);
+        font-family: 'Great Vibes', cursive;
+        font-size: clamp(24px, 6vw, 32px) !important;
+        color: #e74c3c;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        margin-top: 15px;
+        animation: glow 2s ease-in-out infinite alternate;
+      }
+
+      @keyframes glow {
+        from {
+          text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #e74c3c, 0 0 20px #e74c3c;
+        }
+        to {
+          text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e74c3c, 0 0 40px #e74c3c;
+        }
       }
 
       .message p {
