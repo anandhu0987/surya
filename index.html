@@ -6,17 +6,30 @@
     <title>Merry Christmas | Amazing 3D Card Rotate On Mousemove</title>
     <link rel="stylesheet" href="style.css">
     <style>
+      /* Add full background cover */
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        background: url('bg.jpg') no-repeat center center fixed;
+        background-size: cover;
+        overflow-x: hidden;
+        perspective: 50px;
+      }
+
       /* Mobile-first responsive styles */
       .container {
         width: 100%;
         max-width: 700px;
-        height: 100vh;
+        min-height: 100vh;
         padding: 20px;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         perspective: 1200px;
+        box-sizing: border-box;
+        background: transparent;
       }
 
       .card {
@@ -26,6 +39,34 @@
         position: relative;
         transform-style: preserve-3d;
         transition: transform 0.8s;
+        background: transparent;
+      }
+
+      .card-side {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        transform-style: preserve-3d;
+        background: transparent;
+      }
+
+      .card-bg {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        border-radius: 20px;
+      }
+
+      .card-bg img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .back {
+        transform: rotateY(180deg);
       }
 
       /* Adjust font sizes for mobile */
@@ -89,12 +130,13 @@
         position: fixed;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
+        width: 100vw;
+        height: 100vh;
         pointer-events: none;
         z-index: 1;
         perspective: 100px;
         transform-style: preserve-3d;
+        background: transparent;
       }
 
       .snowflake {
@@ -265,10 +307,17 @@
         }
       }
 
-      /* Ensure container stays above snowflakes */
+      /* Ensure container stays above snowflakes but below card */
       .container {
         position: relative;
         z-index: 2;
+        background: transparent;
+      }
+
+      /* Ensure card stays on top */
+      .card {
+        position: relative;
+        z-index: 3;
       }
     </style>
   </head>
