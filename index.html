@@ -320,8 +320,15 @@
         z-index: 3;
       }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   </head>
   <body>
+    <!-- Add audio element -->
+    <audio id="bgMusic" loop autoplay>
+      <source src="jingle-bells.mp3" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+
     <div class="snowflakes" aria-hidden="true">
       <div class="snowflake">❅</div>
       <div class="snowflake">❆</div>
@@ -389,14 +396,20 @@
             <img src="card-bg.jpg" alt="">
           </div>
           <div class="title">
-            <h2>Dear Devapriya</h2>
+            <h2>Dear Surya</h2>
             <div class="message">
-              <p>As snowflakes dance and bells ring clear,</p>
-              <p>I'm sending you warm wishes, my dear friend.</p>
-              <p>May your holidays be filled with joy, laughter,</p>
-              <p>and magical moments that never end.</p>
-              <p class="signature">With love & friendship,</p>
-              <p class="signature-name">aswin</p>
+              <p class="greeting">As snowflakes dance and bells ring clear,</p>
+              <p class="congrats">I'm sending you warm wishes and</p>
+              <p class="congrats">heartfelt congratulations on passing</p>
+              <p class="congrats">your LLB examination!</p>
+              <p class="wishes">May this achievement be the beginning</p>
+              <p class="wishes">of a brilliant legal career.</p>
+              <p class="wishes">Your dedication shines bright!</p>
+              <p class="closing">Wishing you a Merry Christmas</p>
+              <p class="closing">and a future filled with success</p>
+              <p class="closing">and endless opportunities.</p>
+              <p class="signature">With best wishes,</p>
+              <p class="signature-name">Anandhu</p>
             </div>
           </div>
         </div>
@@ -407,6 +420,20 @@
     </div>
 
     <script type="text/javascript">
+    // Initialize background music
+    const bgMusic = document.getElementById('bgMusic');
+    
+    // Try to play music as soon as page loads
+    window.addEventListener('load', () => {
+      bgMusic.play().catch(e => {
+        console.log("Audio autoplay was prevented by browser");
+        // We'll try again on first user interaction
+        document.addEventListener('click', () => {
+          bgMusic.play().catch(e => console.log("Audio play failed"));
+        }, { once: true });
+      });
+    });
+
     const container = document.querySelector(".container");
     const card = document.querySelector(".card");
     const frontTitle = document.querySelector(".front .title");
@@ -480,7 +507,7 @@
       }, { passive: false });
     });
 
-    // Keep existing button click handlers
+    // Auto play music when card is flipped
     frontBtn.addEventListener("click", () => {
       isFlipped = true;
       card.style.transform = 'rotateY(180deg)';
@@ -491,6 +518,13 @@
       frontTitle.style.transform = 'translateZ(0)';
       santa.style.transform = 'translateZ(0)';
       tree.style.transform = 'translateZ(0)';
+
+      // Start playing music when card is flipped
+      if (!isMusicPlaying) {
+        bgMusic.play().catch(e => console.log("Audio autoplay was prevented"));
+        isMusicPlaying = true;
+        musicIcon.className = 'fas fa-pause';
+      }
     });
 
     backBtn.addEventListener("click", () => {
@@ -503,26 +537,54 @@
     </script>
 
     <style>
+    .message {
+      text-align: center;
+      padding: 20px;
+      line-height: 1.5;
+    }
+
     .message p {
-      margin: 15px 0;
-      font-size: 18px;
-      line-height: 1.6;
+      margin: 8px 0;
+      font-size: 16px;
       color: #333;
     }
 
+    .message .greeting {
+      font-size: 18px;
+      color: #2c3e50;
+      margin-bottom: 15px;
+    }
+
+    .message .congrats {
+      font-size: 17px;
+      color: #c0392b;
+      line-height: 1.4;
+    }
+
+    .message .wishes {
+      font-size: 17px;
+      color: #2c3e50;
+      line-height: 1.4;
+      margin-top: 5px;
+    }
+
+    .message .closing {
+      font-size: 17px;
+      color: #34495e;
+      line-height: 1.4;
+      margin-top: 5px;
+    }
+
     .message .signature {
-      margin-top: 30px;
-      margin-bottom: 5px;
+      margin-top: 20px;
       font-style: italic;
-      font-family: "Berkshire Swash", cursive;
-      font-size: 20px;
-      color: #c44545;
+      color: #7f8c8d;
     }
 
     .message .signature-name {
       margin-top: 5px;
       font-family: "Berkshire Swash", cursive;
-      font-size: 24px;
+      font-size: 22px;
       color: #c44545;
       font-weight: bold;
     }
