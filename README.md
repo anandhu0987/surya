@@ -1,20 +1,28 @@
-# Christmas Card Website 🎄 [![Deployment Status](https://img.shields.io/website?url=https%3A%2F%2Faswinkp2002.github.io%2Fchristmas-card%2F)](https://aswinkp2002.github.io/christmas-card/)
+# Christmas Card for Surya 🎄 [![Deployment Status](https://img.shields.io/website?url=https%3A%2F%2Fanandhu0987.github.io%2Fsurya%2F)](https://anandhu0987.github.io/surya/)
 
-A beautiful and interactive Christmas card website created with HTML, CSS, and JavaScript featuring 3D animations and snowfall effects.
+A personalized interactive Christmas card created with love, featuring 3D animations, snowfall effects, and a special congratulatory message for passing the LLB examination! 🎓
 
 ## 🌟 Features
 
 - Interactive 3D card with rotation effects
 - Beautiful snowfall animation
-- Responsive design for both desktop and mobile
+- Background Christmas music
+- Personalized congratulatory message
 - Touch-enabled for mobile devices
-- Personalized holiday message
 - Flip animation to reveal message
 - Festive design with Christmas theme
 
+## 🎯 Special Message
+
+This card includes:
+- Christmas greetings
+- Congratulations for LLB success
+- Best wishes for future legal career
+- Personal touch with animated effects
+
 ## 🚀 Live Demo
 
-✨ The Christmas card is now live! Visit it here: [https://aswinkp2002.github.io/christmas-card/](https://aswinkp2002.github.io/christmas-card/)
+✨ View the Christmas card here: [https://anandhu0987.github.io/surya/](https://anandhu0987.github.io/surya/)
 
 ## 🛠️ Technologies Used
 
@@ -23,19 +31,21 @@ A beautiful and interactive Christmas card website created with HTML, CSS, and J
 - JavaScript
 - 3D Transforms
 - Custom animations
+- Background music integration
 - Responsive design
 - GitHub Pages for deployment
 
 ## 📁 Project Structure
 
 ```
-christmas-card/
+surya/
 ├── index.html
 ├── style.css
 ├── bg.jpg
 ├── card-bg.jpg
 ├── santa.png
-└── tree.png
+├── tree.png
+└── jingle-bells.mp3
 ```
 
 ## 🎨 Features & Effects
@@ -45,6 +55,7 @@ christmas-card/
 - Falling snowflake animation
 - Smooth flip transition for message reveal
 - Parallax effect on card elements
+- Auto-playing background music
 - Responsive design for all screen sizes
 
 ## 📱 Mobile Support
@@ -54,14 +65,12 @@ christmas-card/
 - Responsive layout that adapts to screen size
 - Performance optimized for mobile browsers
 
-## 📝 License
+## 📝 Audio Feature
 
-This project is open source and available for personal use.
-
-## 🤝 Contributing
-
-Feel free to fork this project and customize it for your own use!
+- Auto-playing Christmas music
+- Seamless background audio integration
+- Mobile-friendly audio implementation
 
 ## 🌐 Deployment Status
 
-The site is successfully deployed using GitHub Pages and is live at [aswinkp2002.github.io/christmas-card](https://aswinkp2002.github.io/christmas-card/). Any changes pushed to the main branch will automatically trigger a new deployment. 
+The site is successfully deployed using GitHub Pages and is live at [anandhu0987.github.io/surya](https://anandhu0987.github.io/surya/). Any changes pushed to the main branch will automatically trigger a new deployment. 
