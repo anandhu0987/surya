@@ -1,4 +1,4 @@
-# Christmas Card Website 🎄
+# Christmas Card Website 🎄 [![Deployment Status](https://img.shields.io/website?url=https%3A%2F%2Faswinkp2002.github.io%2Fchristmas-card%2F)](https://aswinkp2002.github.io/christmas-card/)
 
 A beautiful and interactive Christmas card website created with HTML, CSS, and JavaScript featuring 3D animations and snowfall effects.
 
@@ -14,7 +14,7 @@ A beautiful and interactive Christmas card website created with HTML, CSS, and J
 
 ## 🚀 Live Demo
 
-Visit the live Christmas card at: [https://aswinkp2002.github.io/christmas-card/](https://aswinkp2002.github.io/christmas-card/)
+✨ The Christmas card is now live! Visit it here: [https://aswinkp2002.github.io/christmas-card/](https://aswinkp2002.github.io/christmas-card/)
 
 ## 🛠️ Technologies Used
 
@@ -62,6 +62,6 @@ This project is open source and available for personal use.
 
 Feel free to fork this project and customize it for your own use!
 
-## 🌐 Deployment
+## 🌐 Deployment Status
 
-This site is deployed using GitHub Pages. Any changes pushed to the main branch will automatically be deployed to the live site. 
+The site is successfully deployed using GitHub Pages and is live at [aswinkp2002.github.io/christmas-card](https://aswinkp2002.github.io/christmas-card/). Any changes pushed to the main branch will automatically trigger a new deployment. 
