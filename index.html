@@ -495,8 +495,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   </head>
   <body>
-    <!-- Add audio element -->
-    <audio id="bgMusic" loop autoplay>
+    <!-- Add audio element with playsinline for iOS -->
+    <audio id="bgMusic" loop playsinline preload="auto">
       <source src="jingle-bells.mp3" type="audio/mpeg">
       Your browser does not support the audio element.
     </audio>
@@ -592,19 +592,53 @@
     </div>
 
     <script type="text/javascript">
-    // Initialize background music
+    // Initialize background music with better mobile support
     const bgMusic = document.getElementById('bgMusic');
-    
-    // Try to play music as soon as page loads
+    let isMusicPlaying = false;
+
+    // Function to handle music playback
+    function playMusic() {
+      if (!isMusicPlaying) {
+        const playPromise = bgMusic.play();
+        
+        if (playPromise !== undefined) {
+          playPromise.then(() => {
+            isMusicPlaying = true;
+            bgMusic.volume = 1.0;
+          }).catch(error => {
+            console.log("Playback failed:", error);
+          });
+        }
+      }
+    }
+
+    // Try to play on page load
     window.addEventListener('load', () => {
-      bgMusic.play().catch(e => {
-        console.log("Audio autoplay was prevented by browser");
-        // We'll try again on first user interaction
-        document.addEventListener('click', () => {
-          bgMusic.play().catch(e => console.log("Audio play failed"));
+      // On mobile, we'll wait for first interaction
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        document.addEventListener('touchstart', function initAudio() {
+          playMusic();
+          document.removeEventListener('touchstart', initAudio);
         }, { once: true });
-      });
+      } else {
+        playMusic();
+      }
     });
+
+    // Try to play on visibility change (when user returns to tab)
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        playMusic();
+      } else {
+        bgMusic.pause();
+        isMusicPlaying = false;
+      }
+    });
+
+    // Additional attempt to play on first click
+    document.addEventListener('click', () => {
+      playMusic();
+    }, { once: true });
 
     const container = document.querySelector(".container");
     const card = document.querySelector(".card");
@@ -679,7 +713,7 @@
       }, { passive: false });
     });
 
-    // Auto play music when card is flipped
+    // Try to play music when card is flipped
     frontBtn.addEventListener("click", () => {
       isFlipped = true;
       card.style.transform = 'rotateY(180deg)';
@@ -691,12 +725,8 @@
       santa.style.transform = 'translateZ(0)';
       tree.style.transform = 'translateZ(0)';
 
-      // Start playing music when card is flipped
-      if (!isMusicPlaying) {
-        bgMusic.play().catch(e => console.log("Audio autoplay was prevented"));
-        isMusicPlaying = true;
-        musicIcon.className = 'fas fa-pause';
-      }
+      // Try to play music when card is flipped
+      playMusic();
     });
 
     backBtn.addEventListener("click", () => {
