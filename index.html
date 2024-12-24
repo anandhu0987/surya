@@ -3,33 +3,63 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Merry Christmas | Amazing 3D Card Rotate On Mousemove</title>
     <link rel="stylesheet" href="style.css">
     <style>
-      /* Add full background cover */
+      /* Add full background cover with cross-browser support */
       body {
         margin: 0;
         padding: 0;
         min-height: 100vh;
+        min-height: -webkit-fill-available;
         background: url('bg.jpg') no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
         background-size: cover;
         overflow-x: hidden;
+        -webkit-perspective: 50px;
+        -moz-perspective: 50px;
         perspective: 50px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
       }
 
-      /* Mobile-first responsive styles */
+      /* Fix for iOS height issue */
+      html {
+        height: -webkit-fill-available;
+      }
+
+      /* Mobile-first responsive styles with cross-browser support */
       .container {
         width: 100%;
         max-width: 700px;
         min-height: 100vh;
+        min-height: -webkit-fill-available;
         padding: 20px;
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
         flex-direction: column;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
         justify-content: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
         align-items: center;
+        -webkit-perspective: 1200px;
         perspective: 1200px;
+        -webkit-box-sizing: border-box;
         box-sizing: border-box;
         background: transparent;
+        -webkit-tap-highlight-color: transparent;
       }
 
       .card {
@@ -37,16 +67,23 @@
         max-width: 450px;
         height: 600px;
         position: relative;
+        -webkit-transform-style: preserve-3d;
         transform-style: preserve-3d;
+        -webkit-transition: -webkit-transform 0.8s;
         transition: transform 0.8s;
+        transition: transform 0.8s, -webkit-transform 0.8s;
         background: transparent;
+        will-change: transform;
       }
 
+      /* Add cross-browser support for card sides */
       .card-side {
         position: absolute;
         width: 100%;
         height: 100%;
+        -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
+        -webkit-transform-style: preserve-3d;
         transform-style: preserve-3d;
         background: transparent;
       }
@@ -66,6 +103,7 @@
       }
 
       .back {
+        -webkit-transform: rotateY(180deg);
         transform: rotateY(180deg);
       }
 
@@ -319,6 +357,52 @@
         position: relative;
         z-index: 3;
       }
+
+      /* Improve touch response */
+      .flip-btn {
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        outline: none;
+      }
+
+      /* Optimize audio for iOS */
+      audio {
+        display: none;
+      }
+
+      /* Add iOS momentum scrolling */
+      .message {
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* Ensure smooth animations across browsers */
+      * {
+        -webkit-transform-style: preserve-3d;
+        transform-style: preserve-3d;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+      }
+
+      /* Fix for Safari */
+      @supports (-webkit-touch-callout: none) {
+        .container {
+          height: -webkit-fill-available;
+        }
+      }
+
+      /* Improve performance on mobile */
+      @media (max-width: 768px) {
+        .card, .card-side {
+          will-change: transform;
+          -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+        }
+      }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   </head>
@@ -420,18 +504,31 @@
     </div>
 
     <script type="text/javascript">
-    // Initialize background music
+    // Initialize background music with iOS/Safari fixes
     const bgMusic = document.getElementById('bgMusic');
-    
-    // Try to play music as soon as page loads
-    window.addEventListener('load', () => {
-      bgMusic.play().catch(e => {
-        console.log("Audio autoplay was prevented by browser");
-        // We'll try again on first user interaction
-        document.addEventListener('click', () => {
-          bgMusic.play().catch(e => console.log("Audio play failed"));
-        }, { once: true });
+    let audioContext;
+
+    // Function to handle audio initialization
+    function initAudio() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+      bgMusic.play().catch(function(error) {
+        console.log("Audio play failed:", error);
       });
+    }
+    
+    // Try to play music as soon as page loads with iOS/Safari support
+    window.addEventListener('load', () => {
+      // iOS requires user interaction
+      document.body.addEventListener('touchstart', initAudio, { once: true });
+      document.body.addEventListener('click', initAudio, { once: true });
+      
+      // Try autoplay
+      initAudio();
     });
 
     const container = document.querySelector(".container");
@@ -443,22 +540,43 @@
     const backBtn = document.querySelector(".back-btn");
     let isFlipped = false;
 
-    // Detect if device supports touch
-    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    // Cross-browser touch detection
+    const isTouchDevice = (('ontouchstart' in window) ||
+      (navigator.maxTouchPoints > 0) ||
+      (navigator.msMaxTouchPoints > 0));
+
+    // Prevent default touch behaviors
+    document.addEventListener('touchmove', function(e) {
+      if (e.scale !== 1) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    // Disable double-tap zoom
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function(e) {
+      const now = (new Date()).getTime();
+      if (now - lastTouchEnd <= 300) {
+        e.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, { passive: false });
 
     if (isTouchDevice) {
-      // Touch device behavior
-      // Simplified rotation for touch devices
+      // Enhanced touch device behavior
       let touchStartX = 0;
       let touchStartY = 0;
+      let touchMoved = false;
 
       container.addEventListener('touchstart', (e) => {
         touchStartX = e.touches[0].clientX;
         touchStartY = e.touches[0].clientY;
+        touchMoved = false;
       }, { passive: true });
 
       container.addEventListener('touchmove', (e) => {
         if (isFlipped) return;
+        touchMoved = true;
 
         const touchX = e.touches[0].clientX;
         const touchY = e.touches[0].clientY;
@@ -466,16 +584,22 @@
         const deltaX = (touchX - touchStartX) / 10;
         const deltaY = (touchY - touchStartY) / 10;
 
-        card.style.transform = `rotateX(${-deltaY}deg) rotateY(${deltaX}deg)`;
+        requestAnimationFrame(() => {
+          card.style.transform = `rotateX(${-deltaY}deg) rotateY(${deltaX}deg)`;
+        });
       }, { passive: true });
 
       container.addEventListener('touchend', () => {
-        card.style.transform = isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)';
-        card.style.transition = 'transform 0.5s ease';
+        if (!touchMoved) return;
+        
+        requestAnimationFrame(() => {
+          card.style.transform = isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)';
+          card.style.transition = 'transform 0.5s ease';
+        });
       });
 
     } else {
-      // Keep existing mouse movement code
+      // Enhanced mouse movement code
       container.addEventListener("mousemove", (e) => {
         if (!container.matches(":hover")) return;
 
@@ -486,53 +610,55 @@
         const rotateX = ((e.clientY - centerY) / (rect.height / 2)) * -15;
         const rotateY = ((e.clientX - centerX) / (rect.width / 2)) * 15;
 
-        if (!isFlipped) {
-          card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-          frontTitle.style.transform = `translateZ(50px)`;
-          santa.style.transform = `translateZ(100px)`;
-          tree.style.transform = `translateZ(75px)`;
-        } else {
-          card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY + 180}deg)`;
-        }
+        requestAnimationFrame(() => {
+          if (!isFlipped) {
+            card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            frontTitle.style.transform = `translateZ(50px)`;
+            santa.style.transform = `translateZ(100px)`;
+            tree.style.transform = `translateZ(75px)`;
+          } else {
+            card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY + 180}deg)`;
+          }
+        });
       });
-
-      // Keep existing mouse enter/leave handlers
     }
 
-    // Optimize button click for touch devices
+    // Optimize button interactions
     [frontBtn, backBtn].forEach(btn => {
       btn.addEventListener('touchstart', (e) => {
         e.preventDefault();
-        btn.click();
+        e.target.click();
       }, { passive: false });
+
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        initAudio(); // Try to play audio on user interaction
+      });
     });
 
-    // Auto play music when card is flipped
+    // Enhanced flip functionality
     frontBtn.addEventListener("click", () => {
       isFlipped = true;
-      card.style.transform = 'rotateY(180deg)';
-      card.style.transition = 'transform 0.6s ease';
-      frontBtn.style.display = 'none';
-      backBtn.style.display = 'block';
-      
-      frontTitle.style.transform = 'translateZ(0)';
-      santa.style.transform = 'translateZ(0)';
-      tree.style.transform = 'translateZ(0)';
-
-      // Start playing music when card is flipped
-      if (!isMusicPlaying) {
-        bgMusic.play().catch(e => console.log("Audio autoplay was prevented"));
-        isMusicPlaying = true;
-        musicIcon.className = 'fas fa-pause';
-      }
+      requestAnimationFrame(() => {
+        card.style.transform = 'rotateY(180deg)';
+        card.style.transition = 'transform 0.6s ease';
+        frontBtn.style.display = 'none';
+        backBtn.style.display = 'block';
+        
+        frontTitle.style.transform = 'translateZ(0)';
+        santa.style.transform = 'translateZ(0)';
+        tree.style.transform = 'translateZ(0)';
+      });
     });
 
     backBtn.addEventListener("click", () => {
       isFlipped = false;
-      card.style.transform = 'rotateY(0deg)';
-      card.style.transition = 'transform 0.6s ease';
-      frontBtn.style.display = 'block';
-      backBtn.style.display = 'none';
+      requestAnimationFrame(() => {
+        card.style.transform = 'rotateY(0deg)';
+        card.style.transition = 'transform 0.6s ease';
+        frontBtn.style.display = 'block';
+        backBtn.style.display = 'none';
+      });
     });
     </script>
 
