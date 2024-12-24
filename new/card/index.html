@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Merry Christmas | Amazing 3D Card Rotate On Mousemove</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+      /* Mobile-first responsive styles */
+      .container {
+        width: 100%;
+        max-width: 700px;
+        height: 100vh;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        perspective: 1200px;
+      }
+
+      .card {
+        width: 100%;
+        max-width: 450px;
+        height: 600px;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.8s;
+      }
+
+      /* Adjust font sizes for mobile */
+      .card .title h1 {
+        font-size: clamp(40px, 8vw, 60px);
+      }
+
+      .card .title h2 {
+        font-size: clamp(20px, 5vw, 25px);
+      }
+
+      .card .title h3 {
+        font-size: clamp(16px, 4vw, 20px);
+      }
+
+      .message p {
+        font-size: clamp(16px, 3.5vw, 18px);
+        padding: 0 15px;
+      }
+
+      /* Adjust images for mobile */
+      .card .images img {
+        width: 90%;
+        max-width: 400px;
+        height: auto;
+      }
+
+      /* Touch device optimizations */
+      @media (hover: none) {
+        .card {
+          transform: none !important;
+        }
+        
+        .frontTitle, .santa, .tree {
+          transform: none !important;
+        }
+      }
+
+      /* Landscape mode adjustments */
+      @media (max-height: 600px) {
+        .card {
+          height: 90vh;
+        }
+        
+        .container {
+          height: auto;
+          min-height: 100vh;
+        }
+      }
+
+      /* Button adjustments for mobile */
+      .flip-btn {
+        padding: 12px 25px;
+        font-size: clamp(14px, 3vw, 16px);
+        margin-top: 20px;
+        touch-action: manipulation;
+      }
+
+      /* Snowflake animation styles */
+      .snowflakes {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+        perspective: 100px;
+        transform-style: preserve-3d;
+      }
+
+      .snowflake {
+        position: fixed;
+        color: #fff;
+        font-size: 1.5em;
+        text-shadow: 0 0 5px rgba(255,255,255,0.8);
+        opacity: 0;
+        will-change: transform;
+      }
+
+      /* Create more snowflakes with better distribution */
+      .snowflake:nth-child(1) { left: 2%; animation: snowfall1 10s linear infinite; animation-delay: -1s; }
+      .snowflake:nth-child(2) { left: 7%; animation: snowfall2 12s linear infinite; animation-delay: -3s; }
+      .snowflake:nth-child(3) { left: 12%; animation: snowfall3 8s linear infinite; animation-delay: -5s; }
+      .snowflake:nth-child(4) { left: 17%; animation: snowfall1 15s linear infinite; animation-delay: -2s; }
+      .snowflake:nth-child(5) { left: 22%; animation: snowfall2 11s linear infinite; animation-delay: -4s; }
+      .snowflake:nth-child(6) { left: 27%; animation: snowfall3 9s linear infinite; animation-delay: -6s; }
+      .snowflake:nth-child(7) { left: 32%; animation: snowfall1 13s linear infinite; animation-delay: -1.5s; }
+      .snowflake:nth-child(8) { left: 37%; animation: snowfall2 14s linear infinite; animation-delay: -3.5s; }
+      .snowflake:nth-child(9) { left: 42%; animation: snowfall3 10s linear infinite; animation-delay: -5.5s; }
+      .snowflake:nth-child(10) { left: 47%; animation: snowfall1 12s linear infinite; animation-delay: -2.5s; }
+      .snowflake:nth-child(11) { left: 52%; animation: snowfall2 11s linear infinite; animation-delay: -4.5s; }
+      .snowflake:nth-child(12) { left: 57%; animation: snowfall3 13s linear infinite; animation-delay: -6.5s; }
+      .snowflake:nth-child(13) { left: 62%; animation: snowfall1 9s linear infinite; animation-delay: -1.2s; }
+      .snowflake:nth-child(14) { left: 67%; animation: snowfall2 14s linear infinite; animation-delay: -3.2s; }
+      .snowflake:nth-child(15) { left: 72%; animation: snowfall3 10s linear infinite; animation-delay: -5.2s; }
+      .snowflake:nth-child(16) { left: 77%; animation: snowfall1 12s linear infinite; animation-delay: -2.7s; }
+      .snowflake:nth-child(17) { left: 82%; animation: snowfall2 15s linear infinite; animation-delay: -4.7s; }
+      .snowflake:nth-child(18) { left: 87%; animation: snowfall3 11s linear infinite; animation-delay: -6.7s; }
+      .snowflake:nth-child(19) { left: 92%; animation: snowfall1 13s linear infinite; animation-delay: -1.7s; }
+      .snowflake:nth-child(20) { left: 97%; animation: snowfall2 8s linear infinite; animation-delay: -3.7s; }
+      .snowflake:nth-child(21) { left: 4%; animation: snowfall3 12s linear infinite; animation-delay: -2.1s; }
+      .snowflake:nth-child(22) { left: 9%; animation: snowfall1 14s linear infinite; animation-delay: -4.1s; }
+      .snowflake:nth-child(23) { left: 14%; animation: snowfall2 10s linear infinite; animation-delay: -6.1s; }
+      .snowflake:nth-child(24) { left: 19%; animation: snowfall3 13s linear infinite; animation-delay: -1.8s; }
+      .snowflake:nth-child(25) { left: 24%; animation: snowfall1 11s linear infinite; animation-delay: -3.8s; }
+      .snowflake:nth-child(26) { left: 29%; animation: snowfall2 9s linear infinite; animation-delay: -5.8s; }
+      .snowflake:nth-child(27) { left: 34%; animation: snowfall3 15s linear infinite; animation-delay: -2.3s; }
+      .snowflake:nth-child(28) { left: 39%; animation: snowfall1 12s linear infinite; animation-delay: -4.3s; }
+      .snowflake:nth-child(29) { left: 44%; animation: snowfall2 10s linear infinite; animation-delay: -6.3s; }
+      .snowflake:nth-child(30) { left: 49%; animation: snowfall3 14s linear infinite; animation-delay: -1.9s; }
+      .snowflake:nth-child(31) { left: 54%; animation: snowfall1 11s linear infinite; animation-delay: -3.9s; }
+      .snowflake:nth-child(32) { left: 59%; animation: snowfall2 13s linear infinite; animation-delay: -5.9s; }
+      .snowflake:nth-child(33) { left: 64%; animation: snowfall3 9s linear infinite; animation-delay: -2.4s; }
+      .snowflake:nth-child(34) { left: 69%; animation: snowfall1 12s linear infinite; animation-delay: -4.4s; }
+      .snowflake:nth-child(35) { left: 74%; animation: snowfall2 15s linear infinite; animation-delay: -6.4s; }
+      .snowflake:nth-child(36) { left: 79%; animation: snowfall3 11s linear infinite; animation-delay: -2.0s; }
+      .snowflake:nth-child(37) { left: 84%; animation: snowfall1 13s linear infinite; animation-delay: -4.0s; }
+      .snowflake:nth-child(38) { left: 89%; animation: snowfall2 10s linear infinite; animation-delay: -6.0s; }
+      .snowflake:nth-child(39) { left: 94%; animation: snowfall3 14s linear infinite; animation-delay: -2.5s; }
+      .snowflake:nth-child(40) { left: 99%; animation: snowfall1 12s linear infinite; animation-delay: -4.5s; }
+
+      /* Different snowfall patterns */
+      @keyframes snowfall1 {
+        0% {
+          transform: translate3d(0, -100%, -20px) rotate(0deg);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 1;
+        }
+        100% {
+          transform: translate3d(10px, 100vh, 20px) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      @keyframes snowfall2 {
+        0% {
+          transform: translate3d(0, -100%, 0) rotate(0deg);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 1;
+        }
+        100% {
+          transform: translate3d(-10px, 100vh, 50px) rotate(-360deg);
+          opacity: 0;
+        }
+      }
+
+      @keyframes snowfall3 {
+        0% {
+          transform: translate3d(0, -100%, 20px) rotate(0deg);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 1;
+        }
+        100% {
+          transform: translate3d(15px, 100vh, -30px) rotate(720deg);
+          opacity: 0;
+        }
+      }
+
+      /* Add more snowflake variations */
+      .snowflake:nth-child(4n) {
+        font-size: 2.2em;
+        filter: blur(1.2px);
+      }
+
+      .snowflake:nth-child(4n + 1) {
+        font-size: 0.8em;
+        filter: blur(0.3px);
+      }
+
+      .snowflake:nth-child(4n + 2) {
+        font-size: 1.5em;
+        filter: blur(0.8px);
+      }
+
+      .snowflake:nth-child(4n + 3) {
+        font-size: 1.8em;
+        filter: blur(1px);
+      }
+
+      /* Add glow effect */
+      .snowflake {
+        filter: drop-shadow(0 0 3px rgba(255,255,255,0.9));
+      }
+
+      /* Optimize for mobile */
+      @media (max-width: 768px) {
+        .snowflake {
+          font-size: 1em;
+        }
+        .snowflake:nth-child(4n) {
+          font-size: 1.5em;
+        }
+        .snowflake:nth-child(4n + 1) {
+          font-size: 0.8em;
+        }
+        .snowflake:nth-child(4n + 2) {
+          font-size: 1.2em;
+        }
+        .snowflake:nth-child(4n + 3) {
+          font-size: 1.8em;
+        }
+      }
+
+      /* Add 3D perspective to container */
+      body {
+        perspective: 50px;
+        overflow-x: hidden;
+      }
+
+      /* Adjust snowflake sizes for mobile */
+      @media (max-width: 768px) {
+        .snowflake {
+          font-size: 0.8em;
+        }
+      }
+
+      /* Reduce animations on devices that prefer reduced motion */
+      @media (prefers-reduced-motion) {
+        .snowflake {
+          animation-duration: 20s, 6s;
+        }
+      }
+
+      /* Ensure container stays above snowflakes */
+      .container {
+        position: relative;
+        z-index: 2;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="snowflakes" aria-hidden="true">
+      <div class="snowflake">❅</div>
+      <div class="snowflake">❆</div>
+      <div class="snowflake">❅</div>
+      <div class="snowflake">✻</div>
+      <div class="snowflake">❅</div>
+      <div class="snowflake">❆</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">✻</div>
+      <div class="snowflake">❅</div>
+      <div class="snowflake">❆</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">✻</div>
+      <div class="snowflake">❅</div>
+      <div class="snowflake">❆</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">✻</div>
+      <div class="snowflake">❅</div>
+      <div class="snowflake">❆</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">✻</div>
+      <div class="snowflake">❅</div>
+      <div class="snowflake">❆</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">✻</div>
+      <div class="snowflake">❅</div>
+      <div class="snowflake">❆</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">✻</div>
+      <div class="snowflake">❅</div>
+      <div class="snowflake">❆</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">✻</div>
+      <div class="snowflake">❅</div>
+      <div class="snowflake">❆</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">✻</div>
+      <div class="snowflake">❅</div>
+      <div class="snowflake">❆</div>
+      <div class="snowflake">❄</div>
+      <div class="snowflake">✻</div>
+    </div>
+
+    <div class="container">
+      <div class="card">
+        <!-- Front Side -->
+        <div class="card-side front">
+          <div class="card-bg">
+            <img src="card-bg.jpg" alt="">
+          </div>
+          <div class="title">
+            <h2>Merry</h2>
+            <h1>Christmas</h1>
+            <h3>& Happy New Year</h3>
+          </div>
+          <div class="images">
+            <img src="santa.png" class="santa" alt="">
+            <img src="tree.png" class="tree" alt="">
+          </div>
+        </div>
+
+        <!-- Back Side -->
+        <div class="card-side back">
+          <div class="card-bg">
+            <img src="card-bg.jpg" alt="">
+          </div>
+          <div class="title">
+            <h2>Dear Geena</h2>
+            <div class="message">
+              <p>As snowflakes dance and bells ring clear,</p>
+              <p>I'm sending you warm wishes, my dear friend.</p>
+              <p>May your holidays be filled with joy, laughter,</p>
+              <p>and magical moments that never end.</p>
+              <p class="signature">With love & friendship,</p>
+              <p class="signature-name">Abin</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Buttons moved outside the card -->
+      <button class="flip-btn front-btn">View Message ↺</button>
+      <button class="flip-btn back-btn">Back to Card ↺</button>
+    </div>
+
+    <script type="text/javascript">
+    const container = document.querySelector(".container");
+    const card = document.querySelector(".card");
+    const frontTitle = document.querySelector(".front .title");
+    const santa = document.querySelector(".santa");
+    const tree = document.querySelector(".tree");
+    const frontBtn = document.querySelector(".front-btn");
+    const backBtn = document.querySelector(".back-btn");
+    let isFlipped = false;
+
+    // Detect if device supports touch
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+    if (isTouchDevice) {
+      // Touch device behavior
+      // Simplified rotation for touch devices
+      let touchStartX = 0;
+      let touchStartY = 0;
+
+      container.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+
+      container.addEventListener('touchmove', (e) => {
+        if (isFlipped) return;
+
+        const touchX = e.touches[0].clientX;
+        const touchY = e.touches[0].clientY;
+        
+        const deltaX = (touchX - touchStartX) / 10;
+        const deltaY = (touchY - touchStartY) / 10;
+
+        card.style.transform = `rotateX(${-deltaY}deg) rotateY(${deltaX}deg)`;
+      }, { passive: true });
+
+      container.addEventListener('touchend', () => {
+        card.style.transform = isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)';
+        card.style.transition = 'transform 0.5s ease';
+      });
+
+    } else {
+      // Keep existing mouse movement code
+      container.addEventListener("mousemove", (e) => {
+        if (!container.matches(":hover")) return;
+
+        const rect = container.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        
+        const rotateX = ((e.clientY - centerY) / (rect.height / 2)) * -15;
+        const rotateY = ((e.clientX - centerX) / (rect.width / 2)) * 15;
+
+        if (!isFlipped) {
+          card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+          frontTitle.style.transform = `translateZ(50px)`;
+          santa.style.transform = `translateZ(100px)`;
+          tree.style.transform = `translateZ(75px)`;
+        } else {
+          card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY + 180}deg)`;
+        }
+      });
+
+      // Keep existing mouse enter/leave handlers
+    }
+
+    // Optimize button click for touch devices
+    [frontBtn, backBtn].forEach(btn => {
+      btn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        btn.click();
+      }, { passive: false });
+    });
+
+    // Keep existing button click handlers
+    frontBtn.addEventListener("click", () => {
+      isFlipped = true;
+      card.style.transform = 'rotateY(180deg)';
+      card.style.transition = 'transform 0.6s ease';
+      frontBtn.style.display = 'none';
+      backBtn.style.display = 'block';
+      
+      frontTitle.style.transform = 'translateZ(0)';
+      santa.style.transform = 'translateZ(0)';
+      tree.style.transform = 'translateZ(0)';
+    });
+
+    backBtn.addEventListener("click", () => {
+      isFlipped = false;
+      card.style.transform = 'rotateY(0deg)';
+      card.style.transition = 'transform 0.6s ease';
+      frontBtn.style.display = 'block';
+      backBtn.style.display = 'none';
+    });
+    </script>
+
+    <style>
+    .message p {
+      margin: 15px 0;
+      font-size: 18px;
+      line-height: 1.6;
+      color: #333;
+    }
+
+    .message .signature {
+      margin-top: 30px;
+      margin-bottom: 5px;
+      font-style: italic;
+      font-family: "Berkshire Swash", cursive;
+      font-size: 20px;
+      color: #c44545;
+    }
+
+    .message .signature-name {
+      margin-top: 5px;
+      font-family: "Berkshire Swash", cursive;
+      font-size: 24px;
+      color: #c44545;
+      font-weight: bold;
+    }
+    </style>
+  </body>
+</html>
